@@ -12,22 +12,22 @@ const PORT                  = process.env.PORT || 3000;
 const PRODIGI_BASE_URL      = 'https://api.prodigi.com/v4.0';
 
 const PRODUCT_MAP = {
-  'dRm5kE8ZLc8M21z8CUbwk03': {
+  'aFa00k8ZLb4IcGd5qIbwk04': {
     title:    'Your Crown',
     sku:      'GLOBAL-STI-5_5X5_5-G',
     imageUrl: () => `${FRONTEND_URL}/images/your-crown.jpg`,
   },
-  'fZu6oIb7TfkYfSpg5mbwk02': {
+  'aFa14oek55KoeOl3iAbwk07': {
     title:    'Loved & Chosen',
     sku:      'GLOBAL-STI-5_5X5_5-G',
     imageUrl: () => `${FRONTEND_URL}/images/loved-and-chosen.jpg`,
   },
-  '3cI6oI1xjfkY5dL6uMbwk01': {
+  '8x25kEcbX8WA0Xv4mEbwk06': {
     title:    'Affirmations',
     sku:      'GLOBAL-STI-5_5X5_5-G',
     imageUrl: () => `${FRONTEND_URL}/images/affirmations.jpg`,
   },
-  'dRm3cwgsd2yc0Xvf1ibwk00': {
+  'fZu7sM7VH6OsgWt3iAbwk05': {
     title:    'Full Joy Bundle',
     sku:      'GLOBAL-STI-5_5X5_5-G',
     imageUrl: null,
@@ -70,13 +70,13 @@ async function handleSuccessfulPayment(session) {
     return;
   }
   const product  = PRODUCT_MAP[productKey];
-  const isBundle = productKey === 'dRm3cwgsd2yc0Xvf1ibwk00';
+  const isBundle = productKey === 'fZu7sM7VH6OsgWt3iAbwk05';
   console.log('Matched product:', product.title);
   const items = isBundle
     ? [
-        { sku: PRODUCT_MAP['dRm5kE8ZLc8M21z8CUbwk03'].sku, imageUrl: PRODUCT_MAP['dRm5kE8ZLc8M21z8CUbwk03'].imageUrl() },
-        { sku: PRODUCT_MAP['fZu6oIb7TfkYfSpg5mbwk02'].sku, imageUrl: PRODUCT_MAP['fZu6oIb7TfkYfSpg5mbwk02'].imageUrl() },
-        { sku: PRODUCT_MAP['3cI6oI1xjfkY5dL6uMbwk01'].sku, imageUrl: PRODUCT_MAP['3cI6oI1xjfkY5dL6uMbwk01'].imageUrl() },
+        { sku: PRODUCT_MAP['aFa00k8ZLb4IcGd5qIbwk04'].sku, imageUrl: PRODUCT_MAP['aFa00k8ZLb4IcGd5qIbwk04'].imageUrl() },
+        { sku: PRODUCT_MAP['aFa14oek55KoeOl3iAbwk07'].sku, imageUrl: PRODUCT_MAP['aFa14oek55KoeOl3iAbwk07'].imageUrl() },
+        { sku: PRODUCT_MAP['8x25kEcbX8WA0Xv4mEbwk06'].sku, imageUrl: PRODUCT_MAP['8x25kEcbX8WA0Xv4mEbwk06'].imageUrl() },
       ]
     : [{ sku: product.sku, imageUrl: product.imageUrl() }];
   const prodigiOrder = {
