@@ -66,6 +66,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 async function handleSuccessfulPayment(session) {
   const paymentLinkId   = session.payment_link || '';
   const customerDetails = session.customer_details;
+  const shippingDetails = session.shipping_details || session.customer_details;
   const productKey = Object.keys(PRODUCT_MAP).find(key => paymentLinkId.includes(key));
 
   if (!productKey) {
@@ -89,16 +90,16 @@ async function handleSuccessfulPayment(session) {
     merchantReference: session.id,
     shippingMethod:    'Budget',
     recipient: {
-      name:        customerDetails?.name || 'Customer',
+      name:        shippingDetails?.name || customerDetails?.name || 'Customer',
       email:       customerDetails?.email || '',
       phoneNumber: customerDetails?.phone || '',
       address: {
-        line1:           customerDetails?.address?.line1 || '',
-        line2:           customerDetails?.address?.line2 || '',
-        postalOrZipCode: customerDetails?.address?.postal_code || '',
-        countryCode:     customerDetails?.address?.country || 'CA',
-        townOrCity:      customerDetails?.address?.city || '',
-        stateOrCounty:   customerDetails?.address?.state || '',
+        line1:           shippingDetails?.address?.line1 || '',
+        line2:           shippingDetails?.address?.line2 || '',
+        postalOrZipCode: shippingDetails?.address?.postal_code || '',
+        countryCode:     shippingDetails?.address?.country || 'CA',
+        townOrCity:      shippingDetails?.address?.city || '',
+        stateOrCounty:   shippingDetails?.address?.state || '',
       },
     },
     items: items.map(item => ({
