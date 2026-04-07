@@ -95,7 +95,7 @@ async function handleSuccessfulPayment(session) {
       phoneNumber: customerDetails?.phone || '',
       address: {
         line1:           shippingDetails?.address?.line1 || '',
-        line2:           shippingDetails?.address?.line2 || '',
+        ...(shippingDetails?.address?.line2 ? { line2: shippingDetails.address.line2 } : {}),
         postalOrZipCode: shippingDetails?.address?.postal_code || '',
         countryCode:     shippingDetails?.address?.country || 'CA',
         townOrCity:      shippingDetails?.address?.city || '',
