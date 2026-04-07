@@ -12,22 +12,22 @@ const PORT                  = process.env.PORT || 3000;
 const PRODIGI_BASE_URL      = 'https://api.prodigi.com/v4.0';
 
 const PRODUCT_MAP = {
-  'aFa00k8ZLb4IcGd5qIbwk04': {
+  'plink_1TG3P5KOBecpGmaFTV2GgNXO': {
     title:    'Your Crown',
     sku:      'GLOBAL-STI-5_5X5_5-G',
     imageUrl: () => `${FRONTEND_URL}/images/your-crown.jpg`,
   },
-  'aFa14oek55KoeOl3iAbwk07': {
+  'plink_1TG3TSKOBecpGmaFlJdbUarh': {
     title:    'Loved & Chosen',
     sku:      'GLOBAL-STI-5_5X5_5-G',
     imageUrl: () => `${FRONTEND_URL}/images/loved-and-chosen.jpg`,
   },
-  '8x25kEcbX8WA0Xv4mEbwk06': {
+  'plink_1TG3RuKOBecpGmaFls0Z9TiA': {
     title:    'Affirmations',
     sku:      'GLOBAL-STI-5_5X5_5-G',
     imageUrl: () => `${FRONTEND_URL}/images/affirmations-sheet.png`,
   },
-  'fZu7sM7VH6OsgWt3iAbwk05': {
+  'plink_1TG3QyKOBecpGmaFLI2AgUZt': {
     title:    'Full Joy Bundle',
     sku:      'GLOBAL-STI-5_5X5_5-G',
     imageUrl: null,
@@ -74,14 +74,14 @@ async function handleSuccessfulPayment(session) {
   }
 
   const product  = PRODUCT_MAP[productKey];
-  const isBundle = productKey === 'fZu7sM7VH6OsgWt3iAbwk05';
+  const isBundle = productKey === 'plink_1TG3QyKOBecpGmaFLI2AgUZt';
   console.log('Matched product:', product.title);
 
   const items = isBundle
     ? [
-        { sku: PRODUCT_MAP['aFa00k8ZLb4IcGd5qIbwk04'].sku, imageUrl: PRODUCT_MAP['aFa00k8ZLb4IcGd5qIbwk04'].imageUrl() },
-        { sku: PRODUCT_MAP['aFa14oek55KoeOl3iAbwk07'].sku, imageUrl: PRODUCT_MAP['aFa14oek55KoeOl3iAbwk07'].imageUrl() },
-        { sku: PRODUCT_MAP['8x25kEcbX8WA0Xv4mEbwk06'].sku, imageUrl: PRODUCT_MAP['8x25kEcbX8WA0Xv4mEbwk06'].imageUrl() },
+        { sku: PRODUCT_MAP['plink_1TG3P5KOBecpGmaFTV2GgNXO'].sku, imageUrl: PRODUCT_MAP['plink_1TG3P5KOBecpGmaFTV2GgNXO'].imageUrl() },
+        { sku: PRODUCT_MAP['plink_1TG3TSKOBecpGmaFlJdbUarh'].sku, imageUrl: PRODUCT_MAP['plink_1TG3TSKOBecpGmaFlJdbUarh'].imageUrl() },
+        { sku: PRODUCT_MAP['plink_1TG3RuKOBecpGmaFls0Z9TiA'].sku, imageUrl: PRODUCT_MAP['plink_1TG3RuKOBecpGmaFls0Z9TiA'].imageUrl() },
       ]
     : [{ sku: product.sku, imageUrl: product.imageUrl() }];
 
