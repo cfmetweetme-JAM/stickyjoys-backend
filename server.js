@@ -25,7 +25,7 @@ const PRODUCT_MAP = {
   '8x25kEcbX8WA0Xv4mEbwk06': {
     title:    'Affirmations',
     sku:      'GLOBAL-STI-5_5X5_5-G',
-    imageUrl: () => `${FRONTEND_URL}/images/affirmations.jpg`,
+    imageUrl: () => `${FRONTEND_URL}/images/affirmations-sheet.png`,
   },
   'fZu7sM7VH6OsgWt3iAbwk05': {
     title:    'Full Joy Bundle',
@@ -49,6 +49,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
     console.error('Webhook signature failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
+
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     console.log('Payment received:', session.id);
@@ -58,6 +59,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
       console.error('Order processing error:', err.message);
     }
   }
+
   res.json({ received: true });
 });
 
@@ -65,13 +67,16 @@ async function handleSuccessfulPayment(session) {
   const paymentLinkId   = session.payment_link || '';
   const customerDetails = session.customer_details;
   const productKey = Object.keys(PRODUCT_MAP).find(key => paymentLinkId.includes(key));
+
   if (!productKey) {
     console.error('No product mapping found for:', paymentLinkId);
     return;
   }
+
   const product  = PRODUCT_MAP[productKey];
   const isBundle = productKey === 'fZu7sM7VH6OsgWt3iAbwk05';
   console.log('Matched product:', product.title);
+
   const items = isBundle
     ? [
         { sku: PRODUCT_MAP['aFa00k8ZLb4IcGd5qIbwk04'].sku, imageUrl: PRODUCT_MAP['aFa00k8ZLb4IcGd5qIbwk04'].imageUrl() },
@@ -79,6 +84,7 @@ async function handleSuccessfulPayment(session) {
         { sku: PRODUCT_MAP['8x25kEcbX8WA0Xv4mEbwk06'].sku, imageUrl: PRODUCT_MAP['8x25kEcbX8WA0Xv4mEbwk06'].imageUrl() },
       ]
     : [{ sku: product.sku, imageUrl: product.imageUrl() }];
+
   const prodigiOrder = {
     merchantReference: session.id,
     shippingMethod:    'Budget',
@@ -96,12 +102,13 @@ async function handleSuccessfulPayment(session) {
       },
     },
     items: items.map(item => ({
-      sku:    item.sku,
-      copies: 1,
-      sizing: 'fillPrintArea',
-      assets: [{ printArea: 'default', url: item.imageUrl }],
+      sku:     item.sku,
+      copies:  1,
+      sizing:  'fillPrintArea',
+      assets:  [{ printArea: 'default', url: item.imageUrl }],
     })),
   };
+
   const response = await axios.post(
     `${PRODIGI_BASE_URL}/orders`,
     prodigiOrder,
