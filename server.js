@@ -109,12 +109,18 @@ async function handleSuccessfulPayment(session) {
     })),
   };
 
-  const response = await axios.post(
-    `${PRODIGI_BASE_URL}/orders`,
-    prodigiOrder,
-    { headers: { 'X-API-Key': PRODIGI_API_KEY, 'Content-Type': 'application/json' } }
-  );
-  console.log('Prodigi order created:', response.data.order?.id);
+  try {
+    const response = await axios.post(
+      `${PRODIGI_BASE_URL}/orders`,
+      prodigiOrder,
+      { headers: { 'X-API-Key': PRODIGI_API_KEY, 'Content-Type': 'application/json' } }
+    );
+    console.log('Prodigi order created:', response.data.order?.id);
+  } catch (prodigiErr) {
+    console.error('Prodigi error status:', prodigiErr.response?.status);
+    console.error('Prodigi error data:', JSON.stringify(prodigiErr.response?.data));
+    throw prodigiErr;
+  }
 }
 
 app.use(express.json());
