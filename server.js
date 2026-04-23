@@ -15,7 +15,7 @@ const PRODUCT_MAP = {
   'plink_1TG3P5KOBecpGmaFTV2GgNXO': {
     title:    'Your Crown',
     sku:      'GLOBAL-STI-5_5X5_5-G',
-    imageUrl: () => `${FRONTEND_URL}/images/your-crown.jpg`,
+    imageUrl: () => `${FRONTEND_URL}/images/Your-Crown-Sticker-Sheet.png`,
   },
   'plink_1TG3TSKOBecpGmaFlJdbUarh': {
     title:    'Loved & Chosen',
