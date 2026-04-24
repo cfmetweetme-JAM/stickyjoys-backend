@@ -20,7 +20,7 @@ const PRODUCT_MAP = {
   'plink_1TG3TSKOBecpGmaFlJdbUarh': {
     title:    'Loved & Chosen',
     sku:      'GLOBAL-STI-5_5X5_5-G',
-    imageUrl: () => `${FRONTEND_URL}/images/loved-and-chosen.jpg`,
+    imageUrl: () => `${FRONTEND_URL}/images/Loved-&-Chosen-Sticker-Sheet.png`,
   },
   'plink_1TG3RuKOBecpGmaFls0Z9TiA': {
     title:    'Affirmations',
