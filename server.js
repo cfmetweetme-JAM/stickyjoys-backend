@@ -54,7 +54,6 @@ const BUNDLE_PLINKS = [
 const printfulHeaders = {
   'Authorization': `Bearer ${PRINTFUL_API_KEY}`,
   'Content-Type': 'application/json',
-  'X-PF-Store-Type': 'manual_order',
 };
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
