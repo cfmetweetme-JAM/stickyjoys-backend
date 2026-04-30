@@ -15,19 +15,19 @@ const PRINTFUL_BASE_URL = 'https://api.printful.com';
 const PRODUCT_MAP = {
   'plink_1TG3P5KOBecpGmaFTV2GgNXO': {
     title:     'Your Crown',
-    variantId: 430534663,
+    variantId: 5288219853,
     fileType:  'default',
     imageUrl:  () => `${FRONTEND_URL}/images/Your-Crown-Sticker-Sheet.png`,
   },
   'plink_1TG3TSKOBecpGmaFlJdbUarh': {
     title:     'Loved & Chosen',
-    variantId: 430534861,
+    variantId: 5288223087,
     fileType:  'default',
     imageUrl:  () => `${FRONTEND_URL}/images/Loved-&-Chosen-Sticker-Sheet.png`,
   },
   'plink_1TG3RuKOBecpGmaFls0Z9TiA': {
     title:     'Affirmations',
-    variantId: 430534788,
+    variantId: 5288222832,
     fileType:  'default',
     imageUrl:  () => `${FRONTEND_URL}/images/affirmations-sheet.png`,
   },
@@ -39,7 +39,7 @@ const PRODUCT_MAP = {
   },
   'plink_1TRzICKOBecpGmaFxtJIVlQM': {
     title:     'Sticky Joys Journal',
-    variantId: 430534968,
+    variantId: 5288223972,
     fileType:  'front',
     imageUrl:  () => `${FRONTEND_URL}/images/journal-cover.jpg`,
   },
@@ -60,18 +60,6 @@ const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 app.get('/', (req, res) => {
   res.json({ status: 'ok', service: 'stickyjoys-backend' });
-});
-
-app.get('/debug-products', async (req, res) => {
-  try {
-    const response = await axios.get(
-     `${PRINTFUL_BASE_URL}/store/products/430534968`,
-      { headers: printfulHeaders }
-    );
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message, data: err.response?.data });
-  }
 });
 
 app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
