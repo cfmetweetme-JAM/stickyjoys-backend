@@ -14,34 +14,34 @@ const PRINTFUL_BASE_URL = 'https://api.printful.com';
 
 const PRODUCT_MAP = {
   'plink_1TG3P5KOBecpGmaFTV2GgNXO': {
-    title:      'Your Crown',
-    templateId: '102044794',
-    fileType:   'default',
-    imageUrl:   () => `${FRONTEND_URL}/images/Your-Crown-Sticker-Sheet.png`,
+    title:     'Your Crown',
+    variantId: 430534663,
+    fileType:  'default',
+    imageUrl:  () => `${FRONTEND_URL}/images/Your-Crown-Sticker-Sheet.png`,
   },
   'plink_1TG3TSKOBecpGmaFlJdbUarh': {
-    title:      'Loved & Chosen',
-    templateId: '102044621',
-    fileType:   'default',
-    imageUrl:   () => `${FRONTEND_URL}/images/Loved-&-Chosen-Sticker-Sheet.png`,
+    title:     'Loved & Chosen',
+    variantId: 430534861,
+    fileType:  'default',
+    imageUrl:  () => `${FRONTEND_URL}/images/Loved-&-Chosen-Sticker-Sheet.png`,
   },
   'plink_1TG3RuKOBecpGmaFls0Z9TiA': {
-    title:      'Affirmations',
-    templateId: '102044431',
-    fileType:   'default',
-    imageUrl:   () => `${FRONTEND_URL}/images/affirmations-sheet.png`,
+    title:     'Affirmations',
+    variantId: 430534788,
+    fileType:  'default',
+    imageUrl:  () => `${FRONTEND_URL}/images/affirmations-sheet.png`,
   },
   'plink_1TG3QyKOBecpGmaFLI2AgUZt': {
-    title:      'Full Joy Bundle',
-    templateId: null,
-    fileType:   'default',
-    imageUrl:   null,
+    title:     'Full Joy Bundle',
+    variantId: null,
+    fileType:  'default',
+    imageUrl:  null,
   },
   'plink_1TRzICKOBecpGmaFxtJIVlQM': {
-    title:      'Sticky Joys Journal',
-    templateId: '101884904',
-    fileType:   'front',
-    imageUrl:   () => `${FRONTEND_URL}/images/journal-cover.jpg`,
+    title:     'Sticky Joys Journal',
+    variantId: 430534968,
+    fileType:  'front',
+    imageUrl:  () => `${FRONTEND_URL}/images/journal-cover.jpg`,
   },
 };
 
@@ -57,21 +57,6 @@ const printfulHeaders = {
 };
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
-
-async function getVariantId(templateId) {
-  const res = await axios.get(
-    `${PRINTFUL_BASE_URL}/store/products`,
-    { headers: printfulHeaders }
-  );
-  const products = res.data?.result;
-  if (!products) throw new Error('No products returned from Printful');
-  console.log('Printful products:', JSON.stringify(products.map(p => ({ id: p.id, name: p.name }))));
-  const match = products.find(p => String(p.sync_product?.id) === String(templateId) || String(p.id) === String(templateId));
-  if (!match) throw new Error(`No product found for templateId ${templateId}`);
-  const variantId = match.sync_variants?.[0]?.variant_id;
-  if (!variantId) throw new Error(`No variant_id for product ${templateId}`);
-  return variantId;
-}
 
 app.get('/', (req, res) => {
   res.json({ status: 'ok', service: 'stickyjoys-backend' });
@@ -115,20 +100,13 @@ async function handleSuccessfulPayment(session) {
   const isBundle = productKey === 'plink_1TG3QyKOBecpGmaFLI2AgUZt';
   console.log('Matched product:', product.title);
 
-  const itemDefs = isBundle
+  const items = isBundle
     ? BUNDLE_PLINKS.map(k => ({
-        templateId: PRODUCT_MAP[k].templateId,
-        fileType:   PRODUCT_MAP[k].fileType,
-        imageUrl:   PRODUCT_MAP[k].imageUrl(),
+        variantId: PRODUCT_MAP[k].variantId,
+        fileType:  PRODUCT_MAP[k].fileType,
+        imageUrl:  PRODUCT_MAP[k].imageUrl(),
       }))
-    : [{ templateId: product.templateId, fileType: product.fileType, imageUrl: product.imageUrl() }];
-
-  const items = await Promise.all(
-    itemDefs.map(async ({ templateId, fileType, imageUrl }) => {
-      const variantId = await getVariantId(templateId);
-      return { variantId, fileType, imageUrl };
-    })
-  );
+    : [{ variantId: product.variantId, fileType: product.fileType, imageUrl: product.imageUrl() }];
 
   const address = shippingDetails?.address || customerDetails?.address || {};
 
@@ -145,8 +123,8 @@ async function handleSuccessfulPayment(session) {
       state_code:   address.state || '',
     },
     items: items.map(({ variantId, fileType, imageUrl }) => ({
-      variant_id: variantId,
-      quantity:   1,
+      sync_variant_id: variantId,
+      quantity:        1,
       files: [{ type: fileType, url: imageUrl }],
     })),
     retail_costs: { currency: 'CAD' },
