@@ -62,6 +62,18 @@ app.get('/', (req, res) => {
   res.json({ status: 'ok', service: 'stickyjoys-backend' });
 });
 
+app.get('/debug-products', async (req, res) => {
+  try {
+    const response = await axios.get(
+      `${PRINTFUL_BASE_URL}/store/products`,
+      { headers: printfulHeaders }
+    );
+    res.json(response.data);
+  } catch (err) {
+    res.status(500).json({ error: err.message, data: err.response?.data });
+  }
+});
+
 app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
