@@ -65,6 +65,7 @@ async function getVariantId(templateId) {
   );
   const products = res.data?.result;
   if (!products) throw new Error('No products returned from Printful');
+  console.log('Printful products:', JSON.stringify(products.map(p => ({ id: p.id, name: p.name }))));
   const match = products.find(p => String(p.sync_product?.id) === String(templateId) || String(p.id) === String(templateId));
   if (!match) throw new Error(`No product found for templateId ${templateId}`);
   const variantId = match.sync_variants?.[0]?.variant_id;
