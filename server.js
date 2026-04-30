@@ -52,4 +52,4 @@ const BUNDLE_PLINKS = [
 ];
 
 const printfulHeaders = {
-  'Authorization': `Bearer ${PRI
+  'Authorization': `Bearer ${PRINTFUL_API_KEY}`,
