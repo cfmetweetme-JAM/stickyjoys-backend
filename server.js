@@ -12,27 +12,36 @@ const PORT                  = process.env.PORT || 3000;
 
 const PRINTFUL_BASE_URL = 'https://api.printful.com';
 
-// Printful product template IDs (from dashboard URLs)
 const PRODUCT_MAP = {
   'plink_1TG3P5KOBecpGmaFTV2GgNXO': {
     title:      'Your Crown',
     templateId: '102044794',
+    fileType:   'default',
     imageUrl:   () => `${FRONTEND_URL}/images/Your-Crown-Sticker-Sheet.png`,
   },
   'plink_1TG3TSKOBecpGmaFlJdbUarh': {
     title:      'Loved & Chosen',
     templateId: '102044621',
+    fileType:   'default',
     imageUrl:   () => `${FRONTEND_URL}/images/Loved-&-Chosen-Sticker-Sheet.png`,
   },
   'plink_1TG3RuKOBecpGmaFls0Z9TiA': {
     title:      'Affirmations',
     templateId: '102044431',
+    fileType:   'default',
     imageUrl:   () => `${FRONTEND_URL}/images/affirmations-sheet.png`,
   },
   'plink_1TG3QyKOBecpGmaFLI2AgUZt': {
     title:      'Full Joy Bundle',
-    templateId: null, // bundle — handled separately
+    templateId: null,
+    fileType:   'default',
     imageUrl:   null,
+  },
+  'plink_1TRySKKOBecpGmaFUqF6ix8J': {
+    title:      'Sticky Joys Journal',
+    templateId: '101884904',
+    fileType:   'front',
+    imageUrl:   () => `${FRONTEND_URL}/images/journal-cover.jpg`,
   },
 };
 
@@ -50,7 +59,6 @@ const printfulHeaders = {
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
-// Fetch the first variant ID from a Printful product template
 async function getVariantId(templateId) {
   const res = await axios.get(
     `${PRINTFUL_BASE_URL}/v2/product-templates/${templateId}`,
@@ -105,16 +113,18 @@ async function handleSuccessfulPayment(session) {
   const isBundle = productKey === 'plink_1TG3QyKOBecpGmaFLI2AgUZt';
   console.log('Matched product:', product.title);
 
-  // Build list of { templateId, imageUrl } to order
   const itemDefs = isBundle
-    ? BUNDLE_PLINKS.map(k => ({ templateId: PRODUCT_MAP[k].templateId, imageUrl: PRODUCT_MAP[k].imageUrl() }))
-    : [{ templateId: product.templateId, imageUrl: product.imageUrl() }];
+    ? BUNDLE_PLINKS.map(k => ({
+        templateId: PRODUCT_MAP[k].templateId,
+        fileType:   PRODUCT_MAP[k].fileType,
+        imageUrl:   PRODUCT_MAP[k].imageUrl(),
+      }))
+    : [{ templateId: product.templateId, fileType: product.fileType, imageUrl: product.imageUrl() }];
 
-  // Resolve variant IDs
   const items = await Promise.all(
-    itemDefs.map(async ({ templateId, imageUrl }) => {
+    itemDefs.map(async ({ templateId, fileType, imageUrl }) => {
       const variantId = await getVariantId(templateId);
-      return { variantId, imageUrl };
+      return { variantId, fileType, imageUrl };
     })
   );
 
@@ -132,19 +142,12 @@ async function handleSuccessfulPayment(session) {
       city:         address.city || '',
       state_code:   address.state || '',
     },
-    items: items.map(({ variantId, imageUrl }) => ({
+    items: items.map(({ variantId, fileType, imageUrl }) => ({
       variant_id: variantId,
       quantity:   1,
-      files: [
-        {
-          type: 'default',
-          url:  imageUrl,
-        },
-      ],
+      files: [{ type: fileType, url: imageUrl }],
     })),
-    retail_costs: {
-      currency: 'CAD',
-    },
+    retail_costs: { currency: 'CAD' },
   };
 
   console.log('Submitting Printful order:', JSON.stringify(printfulOrder, null, 2));
