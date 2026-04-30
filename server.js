@@ -37,7 +37,7 @@ const PRODUCT_MAP = {
     fileType:   'default',
     imageUrl:   null,
   },
-  'plink_1TRySKKOBecpGmaFUqF6ix8J': {
+  'plink_1TRzICKOBecpGmaFxtJIVlQM': {
     title:      'Sticky Joys Journal',
     templateId: '101884904',
     fileType:   'front',
