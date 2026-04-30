@@ -65,7 +65,7 @@ app.get('/', (req, res) => {
 app.get('/debug-products', async (req, res) => {
   try {
     const response = await axios.get(
-     `${PRINTFUL_BASE_URL}/store/products/430534788`,
+     `${PRINTFUL_BASE_URL}/store/products/430534663`,
       { headers: printfulHeaders }
     );
     res.json(response.data);
