@@ -60,13 +60,15 @@ const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 async function getVariantId(templateId) {
   const res = await axios.get(
-    `${PRINTFUL_BASE_URL}/v2/product-templates/${templateId}`,
+    `${PRINTFUL_BASE_URL}/store/products`,
     { headers: printfulHeaders }
   );
-  const products = res.data?.data?.products;
-  if (!products || products.length === 0) throw new Error(`No products in template ${templateId}`);
-  const variantId = products[0]?.variant_id;
-  if (!variantId) throw new Error(`No variant_id in template ${templateId}`);
+  const products = res.data?.result;
+  if (!products) throw new Error('No products returned from Printful');
+  const match = products.find(p => String(p.sync_product?.id) === String(templateId) || String(p.id) === String(templateId));
+  if (!match) throw new Error(`No product found for templateId ${templateId}`);
+  const variantId = match.sync_variants?.[0]?.variant_id;
+  if (!variantId) throw new Error(`No variant_id for product ${templateId}`);
   return variantId;
 }
 
