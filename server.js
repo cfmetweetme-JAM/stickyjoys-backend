@@ -132,21 +132,25 @@ async function handleSuccessfulPayment(session) {
 
   console.log('Submitting Printful order:', JSON.stringify(printfulOrder, null, 2));
 
-  try {
+ try {
     const response = await axios.post(
-  `${PRINTFUL_BASE_URL}/orders`,
-  printfulOrder,
-  { headers: printfulHeaders }
-);
-const orderId = response.data?.result?.id;
-console.log('Printful order created:', orderId);
+      `${PRINTFUL_BASE_URL}/orders`,
+      printfulOrder,
+      { headers: printfulHeaders }
+    );
+    const orderId = response.data?.result?.id;
+    console.log('Printful order created:', orderId);
 
-await axios.post(
-  `${PRINTFUL_BASE_URL}/orders/${orderId}/confirm`,
-  {},
-  { headers: printfulHeaders }
-);
-console.log('Printful order confirmed:', orderId);
+    await axios.post(
+      `${PRINTFUL_BASE_URL}/orders/${orderId}/confirm`,
+      {},
+      { headers: printfulHeaders }
+    );
+    console.log('Printful order confirmed:', orderId);
+  } catch (printfulErr) {
+    console.error('Printful error status:', printfulErr.response?.status);
+    console.error('Printful error data:', JSON.stringify(printfulErr.response?.data));
+    throw printfulErr;
   }
 }
 
